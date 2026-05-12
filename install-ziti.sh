@@ -20,10 +20,11 @@ echo "[ziti-install] Checking identity file..."
 }
 
 echo "[ziti-install] Downloading ziti-edge-tunnel binary..."
-wget -q --show-progress -O "${BINARY_GZ}" "${BINARY_URL}" || {
+wget -q -O "${BINARY_GZ}" "${BINARY_URL}" || {
     echo "ERROR: Download failed. Check internet connectivity."
     exit 1
 }
+echo "[ziti-install] Download complete."
 gunzip -f "${BINARY_GZ}"
 chmod +x "${BINARY}"
 echo "[ziti-install] Binary ready: $(ls -lh ${BINARY} | awk '{print $5, $9}')"
