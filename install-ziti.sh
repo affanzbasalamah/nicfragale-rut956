@@ -45,6 +45,13 @@ BINARY_URL="https://github.com/affanzbasalamah/nicfragale-rut956/raw/main/OpenWR
 
 download_binary() {
     [ -x "${BINARY}" ] && return 0
+    logger -t ziti "Waiting for WAN connectivity..."
+    local i=0
+    while ! ping -c1 -W2 8.8.8.8 >/dev/null 2>&1; do
+        i=$((i+1))
+        [ $i -ge 30 ] && { logger -t ziti "ERROR: No WAN after 60s, giving up"; return 1; }
+        sleep 2
+    done
     logger -t ziti "Downloading ziti-edge-tunnel from GitHub..."
     wget -q -O "${BINARY_GZ}" "${BINARY_URL}" 2>/dev/null || {
         logger -t ziti "ERROR: Download failed"
@@ -76,12 +83,6 @@ start_service() {
 
 stop_service() {
     logger -t ziti "Stopped ziti-edge-tunnel"
-}
-
-restart() {
-    stop
-    sleep 2
-    start
 }
 INITEOF
 
